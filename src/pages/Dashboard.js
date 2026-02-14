@@ -162,27 +162,30 @@ export function Dashboard() {
   }, []);
 
   useEffect(() => {
-    axios
-      .get("sitebookings")
-      .then((response) => {
-        const bookings = response.data || [];
+  axios
+    .get("https://navagara-backend.onrender.com/sitebookings")
+    .then((response) => {
+      // ⭐ ALWAYS ensure array
+      const bookings = Array.isArray(response.data?.data)
+        ? response.data.data
+        : [];
 
-        SetTotalSiteBookings(bookings.length);
+      SetTotalSiteBookings(bookings.length);
 
-        // monthly booked amount (sum totalamount)
-        const monthlyData = groupByMonthly(bookings, "totalamount");
-        SetTotalMonthlySiteBookings(monthlyData);
+      const monthlyData = groupByMonthly(bookings, "totalamount");
+      SetTotalMonthlySiteBookings(monthlyData);
 
-        const bookedTotal = bookings.reduce(
-          (sum, b) => sum + Number(b.totalamount || 0),
-          0,
-        );
-        setTotalBookedAmount(bookedTotal);
-      })
-      .catch((error) => {
-        console.error("There was error while fetching the bookings!", error);
-      });
-  }, []);
+      const bookedTotal = bookings.reduce(
+        (sum, b) => sum + Number(b.totalamount || 0),
+        0
+      );
+      setTotalBookedAmount(bookedTotal);
+    })
+    .catch((error) => {
+      console.error("There was error while fetching the bookings!", error);
+    });
+}, []);
+
 
   useEffect(() => {
     axios
