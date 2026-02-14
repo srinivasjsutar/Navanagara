@@ -20,53 +20,51 @@ export function Dashboard() {
   const [totalBookedAmount, setTotalBookedAmount] = useState(0);
   const [totalPaidAmount, setTotalPaidAmount] = useState(0);
 
-  const groupByMonthly = (data, amountField = null) => {
-    const monthlyData = {};
+ const groupByMonthly = (data, amountField = null) => {
+  // ⭐ FIX: prevent crash when data is not array
+  if (!Array.isArray(data)) {
+    console.warn("groupByMonthly received non-array:", data);
+    return [];
+  }
 
-    data.forEach((item) => {
-      const dateValue =
-        item.createdAt ||
-        item.date ||
-        item.created_at ||
-        item.bookingDate ||
-        item.receiptDate;
+  const monthlyData = {};
 
-      if (!dateValue) {
-        console.warn("No date field found for item:", item);
-        return;
-      }
+  data.forEach((item) => {
+    const dateValue =
+      item.createdAt ||
+      item.date ||
+      item.created_at ||
+      item.bookingDate ||
+      item.receiptDate;
 
-      const date = new Date(dateValue);
+    if (!dateValue) return;
 
-      if (isNaN(date.getTime())) {
-        console.warn("Invalid date:", dateValue, "for item:", item);
-        return;
-      }
+    const date = new Date(dateValue);
+    if (isNaN(date.getTime())) return;
 
-      const monthYear = `${date.getFullYear()}-${String(
-        date.getMonth() + 1,
-      ).padStart(2, "0")}`;
+    const monthYear = `${date.getFullYear()}-${String(
+      date.getMonth() + 1
+    ).padStart(2, "0")}`;
 
-      if (!monthlyData[monthYear]) {
-        monthlyData[monthYear] = {
-          month: monthYear,
-          count: 0,
-          amount: 0,
-        };
-      }
+    if (!monthlyData[monthYear]) {
+      monthlyData[monthYear] = {
+        month: monthYear,
+        count: 0,
+        amount: 0,
+      };
+    }
 
-      monthlyData[monthYear].count++;
+    monthlyData[monthYear].count++;
 
-      // ✅ IMPORTANT: Always add as Number
-      if (amountField) {
-        monthlyData[monthYear].amount += Number(item[amountField] || 0);
-      }
-    });
+    if (amountField) {
+      monthlyData[monthYear].amount += Number(item[amountField] || 0);
+    }
+  });
 
-    return Object.values(monthlyData).sort((a, b) =>
-      a.month.localeCompare(b.month),
-    );
-  };
+  return Object.values(monthlyData).sort((a, b) =>
+    a.month.localeCompare(b.month)
+  );
+};
 
   const getAllUniqueMonths = () => {
     const months = new Set();
