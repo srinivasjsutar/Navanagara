@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance
 const api = axios.create({
-  baseURL: 'http://localhost:3001',
+  baseURL: 'https://navagara-backend.onrender.com/',
   headers: {
     'Content-Type': 'application/json',
   },
