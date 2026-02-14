@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 
+const API_BASE =  process.env.REACT_APP_API_BASE ;
+
 const schema = Yup.object({
   username: Yup.string().trim().required("Username is required"),
   password: Yup.string().required("Password is required"),
@@ -23,7 +25,7 @@ export function AdminLogin() {
       
       try {
         const response = await axios.post(
-          "https://navagara-backend.onrender.com/admin/login",
+          `${API_BASE}/admin/login`,
           
           {
             username: values.username,
