@@ -21,12 +21,6 @@ export function Dashboard() {
   const [totalPaidAmount, setTotalPaidAmount] = useState(0);
 
  const groupByMonthly = (data, amountField = null) => {
-  // ⭐ FIX: prevent crash when data is not array
-  if (!Array.isArray(data)) {
-    console.warn("groupByMonthly received non-array:", data);
-    return [];
-  }
-
   const monthlyData = {};
 
   data.forEach((item) => {
@@ -37,13 +31,20 @@ export function Dashboard() {
       item.bookingDate ||
       item.receiptDate;
 
-    if (!dateValue) return;
+    if (!dateValue) {
+      console.warn("No date field found for item:", item);
+      return;
+    }
 
     const date = new Date(dateValue);
-    if (isNaN(date.getTime())) return;
+
+    if (isNaN(date.getTime())) {
+      console.warn("Invalid date:", dateValue, "for item:", item);
+      return;
+    }
 
     const monthYear = `${date.getFullYear()}-${String(
-      date.getMonth() + 1
+      date.getMonth() + 1,
     ).padStart(2, "0")}`;
 
     if (!monthlyData[monthYear]) {
@@ -62,9 +63,10 @@ export function Dashboard() {
   });
 
   return Object.values(monthlyData).sort((a, b) =>
-    a.month.localeCompare(b.month)
+    a.month.localeCompare(b.month),
   );
 };
+
 
   const getAllUniqueMonths = () => {
     const months = new Set();
