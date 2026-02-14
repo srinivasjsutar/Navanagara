@@ -216,7 +216,7 @@ export function SideBar() {
       </div>
       <div className="bg-white w-full p-4 mt-auto flex justify-center items-center">
         <img src="/images/exit.svg" />
-        <Link className="text-[24px] text-dark no-underline ps-[30px]">
+        <Link path="*" className="text-[24px] text-dark no-underline ps-[30px]">
           Sign Out
         </Link>
       </div>
