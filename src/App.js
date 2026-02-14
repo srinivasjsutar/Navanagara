@@ -7,7 +7,7 @@ import { Dashboard } from "./pages/Dashboard";
 import { Receipt } from "./pages/Receipts";
 import { AddAdmin } from "./components/AddAdmin";
 import { AddMember } from "./components/AddMember";
-import { SideBar } from "./components/sidebar";
+import { SideBar } from "./components/sidebar"; 
 import { Report } from "./pages/report";
 import { MemberList } from "./components/MemberList";
 import { SiteBookingList } from "./components/SiteBookingList";
