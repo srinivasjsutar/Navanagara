@@ -6,9 +6,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-// ✅ FIXED BASE URL (works local + production)
-const API_BASE =
-  process.env.REACT_APP_API_BASE || "https://navagara-backend.onrender.com/api";
+const API_BASE =  process.env.REACT_APP_API_BASE ;
 
 const schema = Yup.object({
   username: Yup.string().trim().required("Username is required"),
@@ -24,35 +22,41 @@ export function AdminLogin() {
     validationSchema: schema,
     onSubmit: async (values) => {
       setIsLoading(true);
-
+      
       try {
-        // ✅ IMPORTANT: your backend route = /api/admin/login
-        const response = await axios.post(`${API_BASE}/admin/login`, {
-          username: values.username,
-          password: values.password,
-        });
+        const response = await axios.post(
+          `${API_BASE}/admin/login`,
+          
+          {
+            username: values.username,
+            password: values.password,
+          }
+        );
 
         if (response.data.success) {
+          // Store token and admin data in localStorage
           localStorage.setItem("adminToken", response.data.token);
-          localStorage.setItem(
-            "adminData",
-            JSON.stringify(response.data.admin),
-          );
+          localStorage.setItem("adminData", JSON.stringify(response.data.admin));
 
+          // Show success message
           toast.success("Login successful!");
 
+          // Small delay to ensure localStorage is set before navigation
           setTimeout(() => {
             navigate("/dashboard");
           }, 100);
         }
       } catch (error) {
         console.error("Login error:", error);
-
+        
         if (error.response) {
+          // Server responded with error
           toast.error(error.response.data.message || "Invalid credentials");
         } else if (error.request) {
+          // Request made but no response
           toast.error("Cannot connect to server. Please try again.");
         } else {
+          // Other errors
           toast.error("Login failed. Please try again.");
         }
       } finally {
@@ -69,32 +73,32 @@ export function AdminLogin() {
     <div>
       <LoginHeader />
       <div className="min-h-screen w-full bg-white flex items-center justify-center font-poppins p-4">
+        {/* Outer container */}
         <div className="w-full max-w-6xl rounded-3xl bg-white overflow-hidden">
           <div className="flex gap-[120px]">
+            {/* LEFT CARD */}
             <img
               className="lg:w-[450px] lg:h-[480px]"
               src="/images/admin_login_img.webp"
               alt="Admin Login"
             />
 
+            {/* RIGHT FORM */}
             <div className="p-8 md:p-12 flex items-center">
               <div className="w-full max-w-md mx-auto">
                 <h1 className="lg:text-[60px] font-bold tracking-tight text-gray-900">
                   ADMIN LOGIN
                 </h1>
-
                 <p className="mt-4 text-[20px] text-[#525252]">
                   How to i get started lorem ipsum dolor at?
                 </p>
 
-                <form
-                  onSubmit={formik.handleSubmit}
-                  className="mt-14 space-y-4"
-                >
+                <form onSubmit={formik.handleSubmit} className="mt-14 space-y-4">
+                  {/* Username */}
                   <div>
                     <div className="relative">
                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
-                        <img src="/images/person.svg" alt="Username" />
+                        <img src="/images/person.svg" alt="Username"/>
                       </span>
 
                       <input
@@ -108,18 +112,18 @@ export function AdminLogin() {
                         disabled={isLoading}
                       />
                     </div>
-
-                    {formik.touched.username && formik.errors.username && (
+                    {formik.touched.username && formik.errors.username ? (
                       <p className="mt-1 text-xs text-red-600">
                         {formik.errors.username}
                       </p>
-                    )}
+                    ) : null}
                   </div>
 
+                  {/* Password */}
                   <div>
                     <div className="relative">
                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
-                        <img src="/images/password.svg" alt="Password" />
+                        <img src="/images/password.svg" alt="Password"/>
                       </span>
 
                       <input
@@ -133,14 +137,14 @@ export function AdminLogin() {
                         disabled={isLoading}
                       />
                     </div>
-
-                    {formik.touched.password && formik.errors.password && (
+                    {formik.touched.password && formik.errors.password ? (
                       <p className="mt-1 text-xs text-red-600">
                         {formik.errors.password}
                       </p>
-                    )}
+                    ) : null}
                   </div>
 
+                  {/* Button */}
                   <div className="pt-2">
                     <button
                       type="submit"
